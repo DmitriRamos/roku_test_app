@@ -1,0 +1,17 @@
+{
+  "host": "http://10.0.0.169:8080",
+  "categories": [
+    {
+      "title": "Drama",
+      "feed_url": "/roku/lessons/drama.json"
+    },
+    {
+      "title": "Comedy",
+      "feed_url": "/roku/lessons/comedy.json"
+    },
+    {
+      "title": "Horror",
+      "feed_url": "/roku/lessons/horror.json"
+    }
+  ]
+}

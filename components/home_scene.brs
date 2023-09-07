@@ -3,7 +3,7 @@ function init()
 	m.category_screen = m.top.findNode("category_screen")
 	m.content_screen = m.top.findNode("content_screen")
 	m.details_screen = m.top.findNode("details_screen")
-
+	m.error_dialog = m.top.findNode("error_dialog")
 	m.videoplayer =m.top.findNode("videoplayer")
 	initializeVideoPlayer()
  
@@ -12,7 +12,27 @@ function init()
 	m.details_screen.observeField("play_button_pressed", "onPlayButtonPressed")
 
 	m.category_screen.setFocus(true)
+	loadConfig()
 end function
+
+sub loadConfig()
+	m.config_task = CreateObject("roSGNode", "load_config_task")
+	m.config_task.observeField("filedata", onConfigResponse)
+	m.config_task.filepath = "resources/config.json"
+	m.config_task.control="RUN"
+end sub
+
+sub onConfigResponse(obj)
+	? "[Home Scene] Config Data: "; obj.getData()
+end sub
+
+sub showErrorDialog(message)
+	m.error_dialog.title = "ERROR"
+	m.error_dialog.message = message
+	m.error_dialog.visible=true
+	'tell the home scene to own the dialog so the remote behaves'
+	m.top.dialog = m.error_dialog
+end sub
 
 sub initializeVideoPlayer()
 	m.videoplayer.EnableCookies()
@@ -30,6 +50,17 @@ end sub
 sub onPlayerStateChanged(obj)
 	state = obj.getData()
 	? "onPlayerStateChanged: ";state
+	if state="error"
+		showErrorDialog(m.videoplayer.errorMsg+ chr(10) + "Error Code: "+m.videoplayer.errorCode.toStr())
+	else if state ="finished"
+		closeVideo()
+	end if
+end sub
+
+sub closeVideo()
+	m.videoplayer.control = "stop"
+	m.videoplayer.visible=false
+	m.details_screen.visible=true
 end sub
 
 sub onPlayButtonPressed(obj)
@@ -98,8 +129,7 @@ function onKeyEvent(key, press) as Boolean
 					m.content_screen.setFocus(true)
 					return true
 			else if m.videoplayer.visible
-					m.videoplayer.visible = false
-					m.details_screen.visible = true
+					closeVideo()
 					m.details_screen.setFocus(true)
 					return true
 			end if

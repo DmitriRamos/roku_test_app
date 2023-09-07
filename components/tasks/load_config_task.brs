@@ -3,8 +3,16 @@ sub init()
 end sub
 
 function load()
-    data=ReadAsciiFile("pkg:/"+m.top.filepath)
-    ? "Config Data: ";data
-    json = parseJSON(data)
-    m.top.filedata = Json
+    if m.top.filepath = ""
+        m.top.error = "Config can't be loaded because filepath not provided."
+    else
+        data=ReadAsciiFile("pkg:/"+m.top.filepath)
+        ? "[Load Config Task] Data: ";data
+        json = parseJSON(data)
+        if json = invalid
+            m.top.error = "File contents invalid"
+        else
+        m.top.filedata = json
+        end if
+    end if
 end function

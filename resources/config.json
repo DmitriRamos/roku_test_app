@@ -3,15 +3,23 @@
   "categories": [
     {
       "title": "Drama",
-      "feed_url": "/roku/lessons/drama.json"
+      "feed_url": "/drama.json"
     },
     {
       "title": "Comedy",
-      "feed_url": "/roku/lessons/comedy.json"
+      "feed_url": "/comedy.json"
     },
     {
       "title": "Horror",
-      "feed_url": "/roku/lessons/horror.json"
+      "feed_url": "/horror.json"
+    },
+    {
+      "title": "Error Test",
+      "feed_url": "/broken_path"
+    },
+    {
+      "title": "Bad Data",
+      "feed_url": "/bad_data.json"
     }
   ]
 }

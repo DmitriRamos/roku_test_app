@@ -16,14 +16,20 @@ function init()
 end function
 
 sub loadConfig()
-	m.config_task = CreateObject("roSGNode", "load_config_task")
-	m.config_task.observeField("filedata", onConfigResponse)
+	m.config_task = createObject("roSGNode", "load_config_task")
+	m.config_task.observeField("error", "onConfigError")
+	m.config_task.observeField("filedata", "onConfigResponse")
 	m.config_task.filepath = "resources/config.json"
 	m.config_task.control="RUN"
 end sub
 
+sub onConfigError(obj)
+	showErrorDialog(obj.getData())
+end sub
+
 sub onConfigResponse(obj)
-	? "[Home Scene] Config Data: "; obj.getData()
+	params = {config:obj.getData()}
+	m.category_screen.callFunc("updateConfig", params)
 end sub
 
 sub showErrorDialog(message)
@@ -90,26 +96,30 @@ sub onCategorySelected(obj)
 end sub
 
 sub loadFeed(url)
-    ' create a task
     m.feed_task = createObject("roSGNode", "load_feed_task")
     m.feed_task.observeField("response", "onFeedResponse")
+	m.feed_task.observeField("error", "onFeedError")
     m.feed_task.url = url
     'tasks have a control field with specific values
     m.feed_task.control = "RUN"
+end sub
+
+sub onFeedError(obj)
+	showErrorDialog(obj.getData())
 end sub
 
 sub onFeedResponse(obj)
 	response = obj.getData()
 	'turn the JSON string into an Associative Array
 	data = parseJSON(response)
-	if data <> Invalid and data.items <> invalid
+	if data <> invalid and data.items <> invalid
         'hide the category screen and show content screen
         m.category_screen.visible = false
         m.content_screen.visible = true
 		' assign data to content screen
 		m.content_screen.feed_data = data
 	else
-		? "FEED RESPONSE IS EMPTY!"
+		showErrorDialog("Feed data malformed.")
 	end if
 end sub
 

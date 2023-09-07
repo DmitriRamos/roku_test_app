@@ -21,14 +21,14 @@ sub init()
           if (msg.GetResponseCode() > 0 and  msg.GetResponseCode() < 400)
             m.top.response = msg.GetString()
           else
-            ? "feed load failed: "; msg.GetFailureReason();" "; msg.GetResponseCode();" "; m.top.url
-            m.top.response = ""
+            m.top.error = "Feed failed to load. "+ chr(10) + msg.getfailurereason() + chr(10) + "Code: "+msg.GetResponseCode().toStr()+ chr(10) + "URL: "+ m.top.url
           end if
           http.asynccancel()
         else if (msg = invalid)
-          ? "feed load failed."
-          m.top.response =""
+          ?
+          m.top.error = "Feed failed to load. Uknown reason."
           http.asynccancel()
         end if
       end if
+      return 0
   end function
